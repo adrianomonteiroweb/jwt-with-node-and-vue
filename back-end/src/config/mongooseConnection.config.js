@@ -9,7 +9,7 @@ mongoose.Promise = global.Promise;
 mongoose.connect(database.local.localUrlDatabse, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true,
+  // useCreateIndex: true, // useCreateIndex não foi suportado.
 }).then(() => {
   console.log('A Base de Dados foi conectada com sucesso!');
 }, (err) => {
