@@ -1,16 +1,17 @@
 const User = require('../models/user.models');
 
+const emailExists = { message: 'Atenção! Este e-mail já possui registro!' };
+const credentialError = {
+  error: 'Erro ao Logar. Verifique suas credenciais.',
+};
+
 // Método responsável por Criar um novo 'User':
 exports.registerNewUser = async (req, res) => {
   try {
     // verificação se o usuário já possui algum e-mail já cadastrado:
     const isUser = await User.find({ email: req.body.email });
     console.log(isUser);
-    if (isUser.length >= 1) {
-      return res
-        .status(409)
-        .json({ message: 'Atenção! Este e-mail já possui registro!' });
-    }
+    if (isUser.length >= 1) return res.status(409).json(emailExists);
 
     const newUser = new User(req.body);
     const user = await newUser.save();
@@ -27,14 +28,11 @@ exports.registerNewUser = async (req, res) => {
 // Método responsável por realizar um novo login 'User':
 exports.loginUser = async (req, res) => {
   try {
-    const { email } = req.body;
-    const { password } = req.body;
+    const { email, password } = req.body;
     const user = await User.findByCredentials(email, password);
-    if (!user) {
-      return res.status(401).json({
-        error: 'Erro ao Logar! Verifique as suas credenciais de autenticação!',
-      });
-    }
+
+    if (!user) return res.status(401).json(credentialError);
+
     const token = await user.generateAuthToken();
     return res
       .status(201)

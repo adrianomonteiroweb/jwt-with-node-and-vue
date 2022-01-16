@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
     console.log(token);
     const decoded = jwt.verify(token, 'secret');
     req.userData = decoded;
-    next();
+    return next();
   } catch (err) {
     return res.status(401).json({ message: 'Falha na Autenticação!' });
   }

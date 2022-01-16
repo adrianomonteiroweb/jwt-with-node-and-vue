@@ -38,21 +38,19 @@ userSchema.methods.generateAuthToken = async function () {
 };
 
 // método irá fazer uma pesquisa por um 'user' por 'email' e 'password'
-let User = mongoose.model('User', userSchema);
+// let User = mongoose.model('User', userSchema);
 
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
   console.log(user);
-  if (!user) {
-    throw new Error({ error: 'Login inválido!' });
-  }
+  if (!user) throw new Error({ error: 'Login inválido!' });
+
   const isPasswordMatch = await bcrypt.compare(password, user.password);
-  if (!isPasswordMatch) {
-    throw new Error({ error: 'Login inválido!' });
-  }
+  if (!isPasswordMatch) throw new Error({ error: 'Login inválido!' });
+
   return user;
 };
 
-User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
